@@ -1,0 +1,144 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Music Player</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://kit.fontawesome.com/40ffa85111.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container">
+  <div class="music-player">
+    <nav>
+      <div class="circle">
+        <i class="fa-solid fa-angles-left"></i>
+      </div>
+      <div class="circle">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+    </nav>
+    <img src= "media/phonecall-jonbrion-thumbnail.jpg" class="song-image">
+    <h1>Phone Call</h1>
+    <p>Jon Brion</p>
+
+    <audio id="song">
+      <source src="media/phonecall-jonbrion.mp3" type="audio/mpeg">
+    </audio>
+    <input type="range" value="0" id="progress">
+
+    <div class="controls">
+      <div>
+        <i class="fa-solid fa-backward"></i>
+      </div>
+      <div onclick="playPause()">
+        <i class="fa-solid fa-play" id="ctrlIcon"></i>
+      </div>
+      <div>
+        <i class="fa-solid fa-forward"></i>
+      </div>
+    </div>
+</div>
+  <script>
+    const songs = [
+      {
+        title: "Phone Call",
+        artist: "Jon Brion",
+        image: "media/phonecall-jonbrion-thumbnail.jpg",
+        src: "media/phonecall-jonbrion.mp3"
+      },
+      {
+        title: "Cornfield Chase",
+        artist: "Hanz Zimmer",
+        image: "media/cornfieldchase-hanzzimmer-thumbnail.jpg",
+        src: "media/cornfieldchase-hanzzimmer.mp3"
+      },
+      {
+        title: "The Devil is in the Details",
+        artist: "The Chemical Brothers",
+        image: "media/theDevilisintheDetails-ChemicalBrothers-thumbnail.jpg",
+        src: "media/TheDevilisintheDetails-ChemicalBrothers.mp3"
+      },
+      {
+        title: "His Theme",
+        artist: "Toby Fox",
+        image: "media/HisTheme-TobyFox-thumbnail.png",
+        src: "media/HisTheme-TobyFox.mp3"
+      },
+      {
+        title: "Mice on Venus",
+        artist: "C418",
+        image: "media/mice-on-venus-c418-thumbnail.jpg",
+        src: "media/MiceOnVenus-c418.mp3"
+      }
+    ];
+
+    let currentSong = 0;
+
+    let progress = document.getElementById('progress');
+    let song = document.getElementById('song');
+    let ctrlIcon = document.getElementById('ctrlIcon');
+
+    song.onloadedmetadata = function() {
+      progress.max = song.duration;
+      progress.value = song.currentTime;
+    }
+
+    function loadSong(index) {
+      document.querySelector('.song-image').src = songs[index].image;
+      document.querySelector('h1').textContent = songs[index].title;
+      document.querySelector('p').textContent = songs[index].artist;
+      song.src = songs[index].src;
+      song.load();
+      progress.value = 0;
+      ctrlIcon.classList.remove('fa-pause');
+      ctrlIcon.classList.add('fa-play');
+    }
+    document.querySelectorAll('.controls div')[0].onclick = function() {
+      // Backward
+      currentSong = (currentSong - 1 + songs.length) % songs.length;
+      loadSong(currentSong);
+    };
+
+    document.querySelectorAll('.controls div')[2].onclick = function() {
+      // Forward
+      currentSong = (currentSong + 1) % songs.length;
+      loadSong(currentSong);
+    };
+
+    loadSong(currentSong);
+
+    function playPause() {
+      if (song.paused) {
+        song.play();
+        ctrlIcon.classList.remove('fa-play');
+        ctrlIcon.classList.add('fa-pause');
+      } else {
+        song.pause();
+        ctrlIcon.classList.remove('fa-pause');
+        ctrlIcon.classList.add('fa-play');
+      }
+    }
+
+    if (song.play()){
+      setInterval(() => {
+        progress.value = song.currentTime;
+      }, 500);
+    }
+
+    progress.onchange = function() {
+      song.play();
+      song.currentTime = progress.value;
+      ctrlIcon.classList.add('fa-pause');
+      ctrlIcon.classList.remove('fa-play');
+
+    }
+
+
+  </script>
+</div>
+</body>
+
+</html>
